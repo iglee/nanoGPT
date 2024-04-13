@@ -160,6 +160,20 @@ class GPTConfig:
     )
 
 
+class PrunedGPT(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.transformer = nn.ModuleDict(
+            dict(
+                wte=nn.Embedding(config.vocab_size, config.n_embd),
+                wpe=nn.Embedding(config.block_size, config.n_embd),
+                drop=nn.Dropout(config.dropout),
+                h=nn.ModuleList([Block(config), PrunedBlock(config) for _ in range(config.n_layer//2)]),
+                ln_f=LayerNorm(config.n_embd, bias=config.bias),
+            )
+        )
+
+
 class GPT(nn.Module):
 
     def __init__(self, config):
