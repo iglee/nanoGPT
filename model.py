@@ -425,3 +425,16 @@ class PrunedGPT(nn.Module):
                 ln_f=LayerNorm(config.n_embd, bias=config.bias),
             )
         )
+
+class UberPrunedGPT(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.transformer = nn.ModuleDict(
+            dict(
+                wte=nn.Embedding(config.vocab_size, config.n_embd),
+                wpe=nn.Embedding(config.block_size, config.n_embd),
+                drop=nn.Dropout(config.dropout),
+                h=nn.ModuleList([Block(config), Block(config), Block(config), Block(config), PrunedBlock(config) for _ in range(config.n_layer//5)]),
+                ln_f=LayerNorm(config.n_embd, bias=config.bias),
+            )
+        )
