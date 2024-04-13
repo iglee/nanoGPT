@@ -421,7 +421,7 @@ class PrunedGPT(nn.Module):
                 wte=nn.Embedding(config.vocab_size, config.n_embd),
                 wpe=nn.Embedding(config.block_size, config.n_embd),
                 drop=nn.Dropout(config.dropout),
-                h=nn.ModuleList([Block(config), PrunedBlock(config) for _ in range(config.n_layer//2)]),
+                h=nn.ModuleList([PrunedBlock(config), Block(config) for _ in range(config.n_layer//2)]),
                 ln_f=LayerNorm(config.n_embd, bias=config.bias),
             )
         )
@@ -434,7 +434,7 @@ class UberPrunedGPT(nn.Module):
                 wte=nn.Embedding(config.vocab_size, config.n_embd),
                 wpe=nn.Embedding(config.block_size, config.n_embd),
                 drop=nn.Dropout(config.dropout),
-                h=nn.ModuleList([Block(config), Block(config), Block(config), Block(config), PrunedBlock(config) for _ in range(config.n_layer//5)]),
+                h=nn.ModuleList([PrunedBlock(config), PrunedBlock(config), PrunedBlock(config), PrunedBlock(config), PrunedBlock(config), Block(config) for _ in range(config.n_layer//6)]),
                 ln_f=LayerNorm(config.n_embd, bias=config.bias),
             )
         )
